@@ -151,21 +151,19 @@ def train(model, train_loader, task, epsilon_p=None):
                 # Backward pass
                 loss_i.backward()
                 
-                # Calculate the gradient norm by treating all gradients as a single vector
+                #? Get all grads to flatten
                 grad_flat = []
                 for param in model.parameters():
                     if param.grad is not None:
                         grad_flat.append(param.grad.flatten())
 
                 if len(grad_flat) > 0:
-                    # Concatenate all gradients into a single vector
-                    all_grads = torch.cat(grad_flat)
-                    # Calculate the norm of the single vector containing all gradients
-                    grad_norm = all_grads.norm(2).item()
+                    all_grads = torch.cat(grad_flat) #! Concat all
+                    grad_norm = all_grads.norm(2).item() #! Compute norm
                 else:
                     grad_norm = 0.0
 
-                epoch_max_grad_norm = max(epoch_max_grad_norm, grad_norm)
+                epoch_max_grad_norm = max(epoch_max_grad_norm, grad_norm) #! For max of epochs
                 
                 # Set model back to train mode for batch training
                 model.train()
